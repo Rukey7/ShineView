@@ -3,6 +3,7 @@ package com.dl7.shineview.views;
 import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.widget.ImageView;
 
 /**
@@ -12,6 +13,7 @@ public class ShineButton extends ImageView {
 
     private ShineView mShineView;
     private Activity mActivity;
+    private int mBottomHeight;
 
 
     public ShineButton(Context context) {
@@ -40,7 +42,16 @@ public class ShineButton extends ImageView {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        if (mActivity != null) {
+            DisplayMetrics displayMetrics = mActivity.getResources().getDisplayMetrics();
+            int[] location = new int[2];
+            getLocationInWindow(location);
+            mBottomHeight = displayMetrics.heightPixels - location[1];
+        }
+    }
 
+    public int getBottomHeight() {
+        return mBottomHeight;
     }
 
     private void _getParents() {
