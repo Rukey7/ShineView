@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 
 /**
@@ -55,5 +57,24 @@ public class ShineButton extends ImageView {
     }
 
     private void _getParents() {
+    }
+
+
+    /************************************************************/
+
+    public void startAnim() {
+        if (mActivity != null) {
+            final ViewGroup rootView = (ViewGroup) mActivity.findViewById(Window.ID_ANDROID_CONTENT);
+            mShineView = new ShineView(mActivity);
+            mShineView.attachTargetView(this);
+            rootView.addView(mShineView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        }
+    }
+
+    public void removeView(ShineView shineView) {
+        if (mActivity != null) {
+            ViewGroup rootView = (ViewGroup) mActivity.findViewById(Window.ID_ANDROID_CONTENT);
+            rootView.removeView(shineView);
+        }
     }
 }

@@ -10,13 +10,16 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.dl7.shineview.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"/>
+    <ImageView
+        android:id="@+id/iv_btn"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"/>
 
-    <com.dl7.shineview.views.ShineView
-        android:layout_width="200dp"
+    <com.dl7.shineview.views.ShineButton
+        android:id="@+id/shine_btn"
+        android:layout_width="30dp"
         android:layout_gravity="center"
-        android:layout_height="200dp"/>
+        android:src="@mipmap/heart"
+        android:layout_height="30dp"/>
 </FrameLayout>
