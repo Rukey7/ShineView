@@ -24,21 +24,29 @@ public class ShineView extends View implements Animatable {
     private static final float BIG_SMALL_ANGLE_INTERVAL = 10.0f;
     private static final int SHINE_DURATION = 3000;
 
+    // 大小圆点画笔
     private Paint mBigPaint;
     private Paint mSmallPaint;
+    // 大小圆矩形框
     private RectF mBigRect;
     private RectF mSmallRect;
+    // 原始矩形框
     private RectF mOriginRect;
+    // 圆点大小
     private float mBigSize;
     private float mSmallSize;
+    // 属性动画
     private ValueAnimator mValueAnimator;
+    // 目标视图
     private ShineButton mTargetView;
+    // 中心坐标
     private int centerX;
     private int centerY;
-    private int mStartRadius;
-    private int mEndRadius;
+    // 动画百分比
     private float mPercent;
+    // 圆点的角度间隔
     private float mDotAngleInterval;
+    // 大小圆点的空间间隔
     private float mDotInterval;
 
 
@@ -80,7 +88,7 @@ public class ShineView extends View implements Animatable {
     @Override
     protected void onDraw(Canvas canvas) {
         _initAnimation();
-        Log.w("ShineView", ""+mPercent);
+        Log.w("ShineView", "" + mPercent);
 //        if (mPercent > ANIM_CHANGE_POINT) {
 //            float scale = (1.0f - mPercent) / (1.0f - ANIM_CHANGE_POINT);
 //            mBigPaint.setStrokeWidth(mBigSize * scale);
@@ -120,36 +128,38 @@ public class ShineView extends View implements Animatable {
         if (isRunning()) {
             return;
         }
-        if (mValueAnimator == null) {
-            int width = mTargetView.getWidth();
-            int height = mTargetView.getHeight();
-            int bottomHeight = mTargetView.getBottomHeight();
-            int[] location = new int[2];
-            mTargetView.getLocationInWindow(location);
-            centerX = location[0] + width / 2;
-            centerY = getMeasuredHeight() - bottomHeight + height / 2;
+        // 计算中心点坐标
+        int width = mTargetView.getWidth();
+        int height = mTargetView.getHeight();
+        int bottomHeight = mTargetView.getBottomHeight();
+        int[] location = new int[2];
+        mTargetView.getLocationInWindow(location);
+        centerX = location[0] + width / 2;
+        centerY = getMeasuredHeight() - bottomHeight + height / 2;
 
-            mStartRadius = Math.max(width, height);
-            mEndRadius = mStartRadius + Math.min(width, height) / 3 * 2;
-            mDotInterval = mStartRadius / 6;
-            mBigSize = mStartRadius / 5;
-            mSmallSize = mStartRadius / 8;
-            mBigPaint.setStrokeWidth(mBigSize);
-            mSmallPaint.setStrokeWidth(mSmallSize);
-            
-            mOriginRect.set(centerX - width / 2, centerY - height / 2, centerX + width / 2, centerY + height / 2);
-            mSmallRect.set(mOriginRect);
-            mBigRect.set(mSmallRect.left - mDotInterval, mSmallRect.top - mDotInterval,
-                    mSmallRect.right + mDotInterval, mSmallRect.bottom + mDotInterval);
+        // 设置大小圆点的参数
+        final int startSpace = Math.max(width, height);
+        // 圆点移动距离
+        final int moveSpace = Math.min(width, height) / 3 * 2;
+        mDotInterval = startSpace / 6;
+        mBigSize = startSpace / 5;
+        mSmallSize = startSpace / 8;
+        mBigPaint.setStrokeWidth(mBigSize);
+        mSmallPaint.setStrokeWidth(mSmallSize);
 
-        }
-        mValueAnimator = ValueAnimator.ofFloat(0, mEndRadius - mStartRadius);
+        // 初始化矩形框
+        mOriginRect.set(centerX - width / 2, centerY - height / 2, centerX + width / 2, centerY + height / 2);
+        mSmallRect.set(mOriginRect);
+        mBigRect.set(mSmallRect.left - mDotInterval, mSmallRect.top - mDotInterval,
+                mSmallRect.right + mDotInterval, mSmallRect.bottom + mDotInterval);
+        // 初始化属性动画
+        mValueAnimator = ValueAnimator.ofFloat(0, moveSpace);
         mValueAnimator.setDuration(SHINE_DURATION);
         mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float value = (float) animation.getAnimatedValue();
-                mPercent = value / (mEndRadius - mStartRadius);
+                mPercent = value / (moveSpace);
                 value /= 2;
                 mSmallRect.set(mOriginRect.left - value, mOriginRect.top - value,
                         mOriginRect.right + value, mOriginRect.bottom + value);

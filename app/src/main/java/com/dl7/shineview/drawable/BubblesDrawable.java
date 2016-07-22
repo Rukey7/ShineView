@@ -25,8 +25,8 @@ import android.view.animation.AccelerateDecelerateInterpolator;
  */
 public class BubblesDrawable extends Drawable implements Animatable {
 
-    private static final int BUBBLES_DURATION = 1200;
-    private static final float BROKEN_PERCENT = 0.7f;
+    private static final int BUBBLES_DURATION = 800;
+    private static final float BROKEN_PERCENT = 0.8f;
     // 混合模式
     private static final PorterDuffXfermode PORTER_DUFF_XFERMODE = new PorterDuffXfermode(PorterDuff.Mode.SRC_IN);
 
@@ -70,7 +70,7 @@ public class BubblesDrawable extends Drawable implements Animatable {
 
     public BubblesDrawable() {
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mPaint.setColor(Color.GRAY);
+        mPaint.setColor(Color.RED);
         mPaint.setStyle(Paint.Style.FILL);
     }
 
@@ -115,6 +115,7 @@ public class BubblesDrawable extends Drawable implements Animatable {
         mCanvas = new Canvas(mBitmap);
         // 计算最大半径
         mMaxRadius = (int) (mRect.width() / 2);
+
         // 控制扩散半径的属性变化
         Keyframe radiusFrame0 = Keyframe.ofInt(0, 0);
         Keyframe radiusFrame1 = Keyframe.ofInt(BROKEN_PERCENT, mMaxRadius);
@@ -127,10 +128,12 @@ public class BubblesDrawable extends Drawable implements Animatable {
         Keyframe alphaFrame2 = Keyframe.ofInt(1.0f, 0);
         PropertyValuesHolder alphaHolder = PropertyValuesHolder.ofKeyframe("alpha",
                 alphaFrame0, alphaFrame1, alphaFrame2);
+
         mValueAnimator = ObjectAnimator.ofPropertyValuesHolder(this, radiusHolder, alphaHolder);
         mValueAnimator.setStartDelay(mStartDelay);
         mValueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-        mValueAnimator.setDuration(mDuration);
+        int duration = (int) ((float)mDuration / BROKEN_PERCENT);
+        mValueAnimator.setDuration(duration);
         mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -138,9 +141,9 @@ public class BubblesDrawable extends Drawable implements Animatable {
                 invalidateSelf();
             }
         });
-//        mValueAnimator.setRepeatMode(ValueAnimator.RESTART);
-//        mValueAnimator.setRepeatCount(ValueAnimator.INFINITE);
-//        start();
+        mValueAnimator.setRepeatMode(ValueAnimator.RESTART);
+        mValueAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        start();
     }
 
     /**
