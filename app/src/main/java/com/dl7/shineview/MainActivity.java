@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.shine_btn:
                 mShineBtn.startAnim();
+//                mShineBtn.setImageDrawable(new BubblesDrawable());
                 break;
         }
     }

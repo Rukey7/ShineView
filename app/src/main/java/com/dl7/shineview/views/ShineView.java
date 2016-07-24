@@ -13,6 +13,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
+import com.dl7.shineview.drawable.BubblesDrawable;
+
 /**
  * Created by long on 2016/7/21.
  */
@@ -30,6 +32,9 @@ public class ShineView extends View implements Animatable {
     // 大小圆矩形框
     private RectF mBigRect;
     private RectF mSmallRect;
+    // 颜色
+    private int mBigColor = Color.RED;
+    private int mSmallColor = Color.GREEN;
     // 原始矩形框
     private RectF mOriginRect;
     // 圆点大小
@@ -37,6 +42,10 @@ public class ShineView extends View implements Animatable {
     private float mSmallSize;
     // 属性动画
     private ValueAnimator mValueAnimator;
+    // 动画时间
+    private int mDuration = SHINE_DURATION;
+    // 动画启动延迟时间
+    private int mStartDelay;
     // 目标视图
     private ShineButton mTargetView;
     // 中心坐标
@@ -48,6 +57,8 @@ public class ShineView extends View implements Animatable {
     private float mDotAngleInterval;
     // 大小圆点的空间间隔
     private float mDotInterval;
+
+    private BubblesDrawable mDrawable;
 
 
     public ShineView(Context context) {
@@ -63,12 +74,12 @@ public class ShineView extends View implements Animatable {
 
     private void _init() {
         mBigPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mBigPaint.setColor(Color.GREEN);
+        mBigPaint.setColor(mBigColor);
         mBigPaint.setStyle(Paint.Style.STROKE);
         mBigPaint.setStrokeCap(Paint.Cap.ROUND);
 
         mSmallPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mSmallPaint.setColor(Color.RED);
+        mSmallPaint.setColor(mSmallColor);
         mSmallPaint.setStyle(Paint.Style.STROKE);
         mSmallPaint.setStrokeCap(Paint.Cap.ROUND);
 
@@ -76,19 +87,12 @@ public class ShineView extends View implements Animatable {
         mSmallRect = new RectF();
         mOriginRect = new RectF();
         mDotAngleInterval = 360.0f / DOT_COUNT;
-    }
 
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        Log.d("ShineView", "onSizeChanged ： " + h);
     }
-
 
     @Override
     protected void onDraw(Canvas canvas) {
-        _initAnimation();
-        Log.w("ShineView", "" + mPercent);
+//        Log.w("ShineView", "" + mPercent);
 //        if (mPercent > ANIM_CHANGE_POINT) {
 //            float scale = (1.0f - mPercent) / (1.0f - ANIM_CHANGE_POINT);
 //            mBigPaint.setStrokeWidth(mBigSize * scale);
@@ -102,18 +106,18 @@ public class ShineView extends View implements Animatable {
             canvas.drawArc(mBigRect, ORIGIN_ANGLE + mDotAngleInterval * i + mPercent * OFFSET_ANGLE,
                     0.1f, false, mBigPaint);
         }
-
         for (int i = 0; i < DOT_COUNT; i++) {
             canvas.drawArc(mSmallRect,
                     ORIGIN_ANGLE + mDotAngleInterval * i + mPercent * OFFSET_ANGLE - BIG_SMALL_ANGLE_INTERVAL,
                     0.1f, false, mSmallPaint);
         }
+
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        Log.d("ShineView", "onMeasure");
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        _initAnimation();
     }
 
     /************************************************************/
@@ -137,6 +141,12 @@ public class ShineView extends View implements Animatable {
         centerX = location[0] + width / 2;
         centerY = getMeasuredHeight() - bottomHeight + height / 2;
 
+        Log.w("ShineView", ""+centerX);
+        Log.w("ShineView", ""+centerY);
+        Log.e("ShineView", ""+width);
+        Log.e("ShineView", ""+height);
+        Log.i("ShineView", ""+location[0]);
+        Log.i("ShineView", ""+getMeasuredHeight());
         // 设置大小圆点的参数
         final int startSpace = Math.max(width, height);
         // 圆点移动距离
@@ -154,7 +164,6 @@ public class ShineView extends View implements Animatable {
                 mSmallRect.right + mDotInterval, mSmallRect.bottom + mDotInterval);
         // 初始化属性动画
         mValueAnimator = ValueAnimator.ofFloat(0, moveSpace);
-        mValueAnimator.setDuration(SHINE_DURATION);
         mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -170,11 +179,25 @@ public class ShineView extends View implements Animatable {
         });
         mValueAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                setAlpha(1);
+            }
+
+            @Override
             public void onAnimationEnd(Animator animation) {
                 mTargetView.removeView(ShineView.this);
             }
         });
+        Log.e("ShineView", ""+mStartDelay);
+        Log.e("ShineView", ""+mDuration);
+        mValueAnimator.setStartDelay(mStartDelay);
+        mValueAnimator.setDuration(mDuration);
+        setAlpha(0);
         mValueAnimator.start();
+
+        mDrawable = new BubblesDrawable();
+        mDrawable.setBounds(0, 0, width, height);
     }
 
     @Override
@@ -186,6 +209,7 @@ public class ShineView extends View implements Animatable {
             mValueAnimator.end();
         }
         if (mValueAnimator != null) {
+            Log.e("ShineView", "start");
             mValueAnimator.start();
         }
     }
@@ -200,5 +224,23 @@ public class ShineView extends View implements Animatable {
     @Override
     public boolean isRunning() {
         return mValueAnimator != null && mValueAnimator.isRunning();
+    }
+
+    public void setAnimatorDelay(int startDelay) {
+        mStartDelay = startDelay;
+    }
+
+    public void setDuration(int duration) {
+        mDuration = duration;
+    }
+
+    public void setBigColor(int bigColor) {
+        mBigColor = bigColor;
+        mBigPaint.setColor(mBigColor);
+    }
+
+    public void setSmallColor(int smallColor) {
+        mSmallColor = smallColor;
+        mSmallPaint.setColor(smallColor);
     }
 }

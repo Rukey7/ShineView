@@ -16,6 +16,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.util.Property;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
@@ -77,6 +78,7 @@ public class BubblesDrawable extends Drawable implements Animatable {
 
     @Override
     public void draw(Canvas canvas) {
+        Log.e("BubblesDrawable", ""+mRadius);
         // 绘制泡泡
         if (mRadius > mMaxRadius) {
             mCanvas.drawCircle(mRect.centerX(), mRect.centerY(), mMaxRadius, mPaint);
@@ -141,8 +143,8 @@ public class BubblesDrawable extends Drawable implements Animatable {
                 invalidateSelf();
             }
         });
-        mValueAnimator.setRepeatMode(ValueAnimator.RESTART);
-        mValueAnimator.setRepeatCount(ValueAnimator.INFINITE);
+//        mValueAnimator.setRepeatMode(ValueAnimator.RESTART);
+//        mValueAnimator.setRepeatCount(ValueAnimator.INFINITE);
         start();
     }
 
