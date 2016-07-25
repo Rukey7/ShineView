@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.dl7.shineview.drawable.BubblesDrawable;
-import com.dl7.shineview.views.ShineButton;
+import com.dl7.shineview.views.FunnyButton;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -16,7 +16,7 @@ import butterknife.OnClick;
 public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.shine_btn)
-    ShineButton mShineBtn;
+    FunnyButton mShineBtn;
     @BindView(R.id.iv_btn)
     ImageView mIvBtn;
 
@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         mIvBtn.setImageDrawable(new BubblesDrawable());
+        mShineBtn.setIcon(R.mipmap.heart);
     }
 
 

@@ -16,10 +16,9 @@
         android:layout_height="50dp"
         android:layout_gravity="center_horizontal"/>
 
-    <com.dl7.shineview.views.ShineButton
+    <com.dl7.shineview.views.FunnyButton
         android:id="@+id/shine_btn"
-        android:layout_width="30dp"
+        android:layout_width="40dp"
         android:layout_gravity="center"
-        android:src="@mipmap/heart"
-        android:layout_height="30dp"/>
+        android:layout_height="40dp"/>
 </FrameLayout>

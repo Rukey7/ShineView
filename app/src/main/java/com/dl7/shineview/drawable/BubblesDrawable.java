@@ -18,7 +18,7 @@ import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.util.Property;
-import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 
 /**
  * Created by long on 2016/7/2.
@@ -27,7 +27,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 public class BubblesDrawable extends Drawable implements Animatable {
 
     private static final int BUBBLES_DURATION = 800;
-    private static final float BROKEN_PERCENT = 0.8f;
+    private static final float BROKEN_PERCENT = 0.7f;
     // 混合模式
     private static final PorterDuffXfermode PORTER_DUFF_XFERMODE = new PorterDuffXfermode(PorterDuff.Mode.SRC_IN);
 
@@ -78,7 +78,7 @@ public class BubblesDrawable extends Drawable implements Animatable {
 
     @Override
     public void draw(Canvas canvas) {
-        Log.e("BubblesDrawable", ""+mRadius);
+//        Log.e("BubblesDrawable", ""+mRadius);
         // 绘制泡泡
         if (mRadius > mMaxRadius) {
             mCanvas.drawCircle(mRect.centerX(), mRect.centerY(), mMaxRadius, mPaint);
@@ -133,8 +133,9 @@ public class BubblesDrawable extends Drawable implements Animatable {
 
         mValueAnimator = ObjectAnimator.ofPropertyValuesHolder(this, radiusHolder, alphaHolder);
         mValueAnimator.setStartDelay(mStartDelay);
-        mValueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+        mValueAnimator.setInterpolator(new LinearInterpolator());
         int duration = (int) ((float)mDuration / BROKEN_PERCENT);
+        Log.e("BubblesDrawable", ""+duration);
         mValueAnimator.setDuration(duration);
         mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -145,7 +146,7 @@ public class BubblesDrawable extends Drawable implements Animatable {
         });
 //        mValueAnimator.setRepeatMode(ValueAnimator.RESTART);
 //        mValueAnimator.setRepeatCount(ValueAnimator.INFINITE);
-        start();
+//        start();
     }
 
     /**

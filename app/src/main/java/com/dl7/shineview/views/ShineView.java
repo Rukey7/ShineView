@@ -12,8 +12,7 @@ import android.graphics.drawable.Animatable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-
-import com.dl7.shineview.drawable.BubblesDrawable;
+import android.view.animation.AccelerateInterpolator;
 
 /**
  * Created by long on 2016/7/21.
@@ -47,7 +46,7 @@ public class ShineView extends View implements Animatable {
     // 动画启动延迟时间
     private int mStartDelay;
     // 目标视图
-    private ShineButton mTargetView;
+    private FunnyButton mTargetView;
     // 中心坐标
     private int centerX;
     private int centerY;
@@ -58,7 +57,6 @@ public class ShineView extends View implements Animatable {
     // 大小圆点的空间间隔
     private float mDotInterval;
 
-    private BubblesDrawable mDrawable;
 
 
     public ShineView(Context context) {
@@ -122,7 +120,7 @@ public class ShineView extends View implements Animatable {
 
     /************************************************************/
 
-    public void attachTargetView(ShineButton view) {
+    public void attachTargetView(FunnyButton view) {
         mTargetView = view;
     }
 
@@ -148,12 +146,12 @@ public class ShineView extends View implements Animatable {
         Log.i("ShineView", ""+location[0]);
         Log.i("ShineView", ""+getMeasuredHeight());
         // 设置大小圆点的参数
-        final int startSpace = Math.max(width, height);
+        final int startSpace = -Math.max(width, height) / 3 * 1;
         // 圆点移动距离
-        final int moveSpace = Math.min(width, height) / 3 * 2;
-        mDotInterval = startSpace / 6;
-        mBigSize = startSpace / 5;
-        mSmallSize = startSpace / 8;
+        final int moveSpace = Math.min(width, height);
+        mDotInterval = width / 12;
+        mBigSize = width / 10;
+        mSmallSize = width / 16;
         mBigPaint.setStrokeWidth(mBigSize);
         mSmallPaint.setStrokeWidth(mSmallSize);
 
@@ -163,12 +161,12 @@ public class ShineView extends View implements Animatable {
         mBigRect.set(mSmallRect.left - mDotInterval, mSmallRect.top - mDotInterval,
                 mSmallRect.right + mDotInterval, mSmallRect.bottom + mDotInterval);
         // 初始化属性动画
-        mValueAnimator = ValueAnimator.ofFloat(0, moveSpace);
+        mValueAnimator = ValueAnimator.ofFloat(startSpace, moveSpace);
         mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float value = (float) animation.getAnimatedValue();
-                mPercent = value / (moveSpace);
+                mPercent = value / (moveSpace - startSpace);
                 value /= 2;
                 mSmallRect.set(mOriginRect.left - value, mOriginRect.top - value,
                         mOriginRect.right + value, mOriginRect.bottom + value);
@@ -193,11 +191,9 @@ public class ShineView extends View implements Animatable {
         Log.e("ShineView", ""+mDuration);
         mValueAnimator.setStartDelay(mStartDelay);
         mValueAnimator.setDuration(mDuration);
+        mValueAnimator.setInterpolator(new AccelerateInterpolator());
         setAlpha(0);
         mValueAnimator.start();
-
-        mDrawable = new BubblesDrawable();
-        mDrawable.setBounds(0, 0, width, height);
     }
 
     @Override

@@ -20,7 +20,7 @@ public class ShineButton extends ImageView {
 
     private final static int FUNNY_DELAY = 500;
     private final static int FUNNY_DURATION = 800;
-    private final static float DOT_POPUP_PERCENT = 0.2f;
+    private final static float DOT_POPUP_PERCENT = 0.4f;
 
 
     private ShineView mShineView;
@@ -106,7 +106,7 @@ public class ShineButton extends ImageView {
             mShineView = new ShineView(mActivity);
             mShineView.setAnimatorDelay(mDotPopupDelay + FUNNY_DELAY);
             mShineView.setDuration(FUNNY_DURATION - mDotPopupDelay);
-            mShineView.attachTargetView(this);
+//            mShineView.attachTargetView(this);
             rootView.addView(mShineView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         }
 //        setBackgroundDrawable(mDrawable);
